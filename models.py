@@ -35,8 +35,6 @@ class InsuringAgreement(models.Model):
   def __str__(self):
     return '%S %S %S' (self.agreementType, self.limit, self.deductible) 
   
-#class Pricing(models.Model):
-  
 class Exposure(models.Model):
   number_employees = models.PositiveIntegerField()
   insurance_limit = models.PositiveIntegerField()
@@ -58,12 +56,23 @@ class Exposure(models.Model):
       upper_bound = employee_count_record_set.filter(insurance_limit__gt=limit).order_by('insurance_limit').first() 
       limit_interp = scipy.interpolate.interp1d([lower_bound.insurance_limit, upper_bound.insurance_limit], [lower_bound.exposure_points, upper_bound.exposure_points])
       return limit_interp(limit)
+
+class ClassCode:
+  class_code = models.CharField(max_length=7, primary_key=True)
+  sfaa_fidelity_loss_cost = models.DecimalField("SFAA Fidelity and Forgery Loss Cost", max_digits=3, decimal_places=2)
+  company_loss_cost = models.DecimalField("Loss Cost Multiplier", max_digits=3, decimal_places=2)
+    
+class Pricing(models.Model):
+  pass                                               
+  #deductible_exposure = Exposure.calc_exposure_units(InsuringAgreement.deductible) * .85
+  #total_exposure = Exposure.calc_exposure_units(InsuringAgreement.insurance_limit+InsuringAgreement.deductible) - deductible_exposure
+  #insuring_agreement_name_premium = total_exposure * ClassCode.sfaa_fidelity_loss_cost * ClassCode.company_loss_cost * agreementType.mod_factor
   
 class Quote(models.Model):
   underwriter = models.CharField(max_length=30)
   created_time = models.DateField(auto_now_add=True)
   account_info = models.ForeignKey(AccountInfo, on_delete=models.CASCADE)
-  class_code = models.CharField(max_length=7)
+  class_code = models.ForeignKey(ClassCode, on_delete=models.CASCADE)
   risk_data = models.ForeignKey(RiskData, on_delete=models.CASCADE)
   insuring_agreements = models.ManyToManyField(InsuringAgreement)
-#  pricing = models.ForeignKey(Pricing, on_delete=models.CASCADE)
+  pricing = models.ForeignKey(Pricing, on_delete=models.CASCADE)
