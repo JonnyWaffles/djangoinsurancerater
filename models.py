@@ -10,7 +10,7 @@ import scipy.interpolate
 
 class AccountInfo(models.Model):
   name = models.CharField(max_length=30)
-  date = models.DateField()
+  date = models.DateField(auto_now=True)
   rating_state = USStateField(null=True, blank=True)
   ENTITY_TYPES = (
     ('M', 'Mercantile'),
@@ -22,27 +22,18 @@ class RiskData(models.Model):
   employee_count = models.PositiveIntegerField()
   rateable_count = models.PositiveIntegerField()
   locations = models.PositiveIntegerField()
-  
+
+class ClassCode(models.Model):
+  class_code = models.CharField(max_length=7, primary_key=True)
+  sfaa_fidelity_loss_cost = models.DecimalField("SFAA Fidelity and Forgery Loss Cost", max_digits=3, decimal_places=2)
+  company_loss_cost = models.DecimalField("Loss Cost Multiplier", max_digits=3, decimal_places=2)  
   
 class AgreementType(models.Model):
   name = models.CharField(max_length=30)
   mod_factor = models.DecimalField(max_digits=5, decimal_places=2)
-
-class InsuringAgreement(models.Model):
-  insurance_limit = models.PositiveIntegerField()
-  deductible = models.PositiveIntegerField()
-  agreement_type = models.ForeignKey(AgreementType, on_delete=models.CASCADE)
-  def __str__(self):
-    return '%S %S %S' (self.agreementType, self.limit, self.deductible) 
   
-class Exposure(models.Model):
-  number_employees = models.PositiveIntegerField()
-  insurance_limit = models.PositiveIntegerField()
-  exposure_points = models.DecimalField(max_digits=7, decimal_places=2)
-  
-  class Meta:
-        unique_together = (('number_employees', 'insurance_limit'),)
-  
+class ExposureManager(models.Manager):
+  @classmethod
   def calc_exposure_units(self, employees, limit):
     from django.core.exceptions import ObjectDoesNotExist
     #if employees at limit does not return a value from the database return interpolated value. Exposure.objects.filter(insurance_limit=limit)...
@@ -56,17 +47,34 @@ class Exposure(models.Model):
       upper_bound = employee_count_record_set.filter(insurance_limit__gt=limit).order_by('insurance_limit').first() 
       limit_interp = scipy.interpolate.interp1d([lower_bound.insurance_limit, upper_bound.insurance_limit], [lower_bound.exposure_points, upper_bound.exposure_points])
       return limit_interp(limit)
-
-class ClassCode:
-  class_code = models.CharField(max_length=7, primary_key=True)
-  sfaa_fidelity_loss_cost = models.DecimalField("SFAA Fidelity and Forgery Loss Cost", max_digits=3, decimal_places=2)
-  company_loss_cost = models.DecimalField("Loss Cost Multiplier", max_digits=3, decimal_places=2)
     
-class Pricing(models.Model):
-  pass                                               
-  #deductible_exposure = Exposure.calc_exposure_units(InsuringAgreement.deductible) * .85
-  #total_exposure = Exposure.calc_exposure_units(InsuringAgreement.insurance_limit+InsuringAgreement.deductible) - deductible_exposure
-  #insuring_agreement_name_premium = total_exposure * ClassCode.sfaa_fidelity_loss_cost * ClassCode.company_loss_cost * agreementType.mod_factor
+class Exposure(models.Model):
+  number_employees = models.PositiveIntegerField()
+  insurance_limit = models.PositiveIntegerField()
+  exposure_points = models.DecimalField(max_digits=7, decimal_places=2)
+  objects = ExposureManager()
+  
+  class Meta:
+        unique_together = (('number_employees', 'insurance_limit'),)  
+
+class InsuringAgreement(models.Model):
+  insurance_limit = models.PositiveIntegerField()
+  deductible = models.PositiveIntegerField()
+  agreement_type = models.ForeignKey(AgreementType, on_delete=models.CASCADE)
+  
+  def __str__(self):
+    return '%S %S %S' (self.agreement_type, self.insurance_limit, self.deductible)
+  
+  def calc_agreement_premium(self, quote):                                               
+    deductible_exposure = Exposure.objects.calc_exposure_units(quote.risk_data.employee_count, self.deductible) * .85
+    total_exposure = Exposure.objects.calc_exposure_units(quote.risk_data.employee_count, self.insurance_limit + self.deductible) - deductible_exposure
+    insuring_agreement_premium = total_exposure * quote.class_code.sfaa_fidelity_loss_cost * quote.class_code.company_loss_cost * self.agreement_type.mod_factor
+    return insuring_agreement_premium
+  
+  
+    
+#class Pricing(models.Model):
+  #pass
   
 class Quote(models.Model):
   underwriter = models.CharField(max_length=30)
@@ -75,4 +83,4 @@ class Quote(models.Model):
   class_code = models.ForeignKey(ClassCode, on_delete=models.CASCADE)
   risk_data = models.ForeignKey(RiskData, on_delete=models.CASCADE)
   insuring_agreements = models.ManyToManyField(InsuringAgreement)
-  pricing = models.ForeignKey(Pricing, on_delete=models.CASCADE)
+  #pricing = models.ForeignKey(Pricing, on_delete=models.CASCADE)
