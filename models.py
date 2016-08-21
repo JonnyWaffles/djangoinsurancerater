@@ -2,7 +2,9 @@ from __future__ import unicode_literals
 
 from django.db import models
 from django.utils import timezone
+from django.utils.encoding import python_2_unicode_compatible
 from localflavor.us.models import USStateField
+import decimal
 import scipy.interpolate
 
 
@@ -23,14 +25,21 @@ class RiskData(models.Model):
   rateable_count = models.PositiveIntegerField()
   locations = models.PositiveIntegerField()
 
+@python_2_unicode_compatible  
 class ClassCode(models.Model):
   class_code = models.CharField(max_length=7, primary_key=True)
-  sfaa_fidelity_loss_cost = models.DecimalField("SFAA Fidelity and Forgery Loss Cost", max_digits=3, decimal_places=2)
-  company_loss_cost = models.DecimalField("Loss Cost Multiplier", max_digits=3, decimal_places=2)  
+  sfaa_fidelity_loss_cost = models.DecimalField(max_digits=3, decimal_places=2)
+  company_loss_cost = models.DecimalField(max_digits=3, decimal_places=2)
+  def __str__(self):
+    return self.class_code
   
+@python_2_unicode_compatible  # only if you need to support Python 2  
 class AgreementType(models.Model):
   name = models.CharField(max_length=30)
   mod_factor = models.DecimalField(max_digits=5, decimal_places=2)
+  
+  def __str__(self):
+    return self.name
   
 class ExposureManager(models.Manager):
   @classmethod
@@ -39,14 +48,15 @@ class ExposureManager(models.Manager):
     #if employees at limit does not return a value from the database return interpolated value. Exposure.objects.filter(insurance_limit=limit)...
     try:
       exposure = Exposure.objects.get(number_employees=employees, insurance_limit=limit)
-      return exposure.exposure_points
+      return decimal.Decimal(exposure.exposure_points)
     except ObjectDoesNotExist:
       employee_count_record_set = Exposure.objects.filter(number_employees=employees)
       #find two records, one for the greatest limit in the queryset less than X and one for the smallest limit in the queryset greater than X
       lower_bound = employee_count_record_set.filter(insurance_limit__lt=limit).order_by('-insurance_limit').first()
       upper_bound = employee_count_record_set.filter(insurance_limit__gt=limit).order_by('insurance_limit').first() 
       limit_interp = scipy.interpolate.interp1d([lower_bound.insurance_limit, upper_bound.insurance_limit], [lower_bound.exposure_points, upper_bound.exposure_points])
-      return limit_interp(limit)
+      answer = limit_interp(limit)
+      return decimal.Decimal(float(answer))
     
 class Exposure(models.Model):
   number_employees = models.PositiveIntegerField()
@@ -57,18 +67,25 @@ class Exposure(models.Model):
   class Meta:
         unique_together = (('number_employees', 'insurance_limit'),)  
 
+@python_2_unicode_compatible  # only if you need to support Python 2      
 class InsuringAgreement(models.Model):
   insurance_limit = models.PositiveIntegerField()
   deductible = models.PositiveIntegerField()
   agreement_type = models.ForeignKey(AgreementType, on_delete=models.CASCADE)
   
   def __str__(self):
-    return '%S %S %S' (self.agreement_type, self.insurance_limit, self.deductible)
+    return '%s %s %s' % (self.agreement_type.name, self.insurance_limit, self.deductible)
   
   def calc_agreement_premium(self, quote):                                               
-    deductible_exposure = Exposure.objects.calc_exposure_units(quote.risk_data.employee_count, self.deductible) * .85
+    deductible_exposure = Exposure.objects.calc_exposure_units(quote.risk_data.employee_count, self.deductible) * decimal.Decimal('.85')
+    print "Deductible Exposure is Type: %s Value: %s" % (type(deductible_exposure), deductible_exposure)
     total_exposure = Exposure.objects.calc_exposure_units(quote.risk_data.employee_count, self.insurance_limit + self.deductible) - deductible_exposure
+    print "Total Exposure is Type: %s Value: %s" % (type(total_exposure), total_exposure)
+    print "SFAA Loss Cost is Type: %s Value: %s" % (type(quote.class_code.sfaa_fidelity_loss_cost), quote.class_code.sfaa_fidelity_loss_cost)
+    print "Company Loss Cost is Type: %s Value: %s" % (type(quote.class_code.company_loss_cost), quote.class_code.company_loss_cost)
+    print "Agreement Mod is Type: %s Value %s" % (type(self.agreement_type.mod_factor), self.agreement_type.mod_factor)
     insuring_agreement_premium = total_exposure * quote.class_code.sfaa_fidelity_loss_cost * quote.class_code.company_loss_cost * self.agreement_type.mod_factor
+    print "Insuring Agreement Premium is Type: %s Value: %s" % (type(insuring_agreement_premium), insuring_agreement_premium)
     return insuring_agreement_premium
   
   

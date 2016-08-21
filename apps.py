@@ -4,4 +4,4 @@ from django.apps import AppConfig
 
 
 class InsuranceraterConfig(AppConfig):
-    name = 'insurancerater'
+    name = 'djangoinsurancerater'

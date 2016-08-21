@@ -1,17 +1,26 @@
-from insurancerater.models import * 
+from djangoinsurancerater.models import * 
 from django.test import TestCase
 from datetime import date
+import os, sys, csv
 # Create your tests here.
 
-class Quoter(TestCase):
-  fixtures = ["exposureRow134.json"]
+class QuoterTestCase(TestCase):
+  #fixtures = ["exposureRow134.json"]
   
   def setUp(cls):
+    with open(os.path.join(sys.path[0], 'djangoinsurancerater/ExposureCSV.csv')) as f:
+      reader = csv.reader(f)
+      for row in reader:
+        _, created = Exposure.objects.get_or_create(
+        number_employees = row[1],
+        insurance_limit = row[2],
+        exposure_points = row[3],
+        )
+        
     accountinfo = AccountInfo.objects.create(name = "TestQuote", date = date(2016, 7, 18))
     riskdata = RiskData.objects.create(employee_count = 5, rateable_count = 5, locations = 1)
-    classcode = ClassCode.objects.create(class_code = "635-41", sfaa_fidelity_loss_cost = .7, company_loss_cost = 1)
-    exposure = Exposure.objects.get(pk = 134)
-    agreementtype = AgreementType.objects.create(name = "Employee Dishonesty", mod_factor = 1)
+    classcode = ClassCode.objects.create(class_code = "635-41", sfaa_fidelity_loss_cost = decimal.Decimal(0.7), company_loss_cost = decimal.Decimal(1.0))
+    agreementtype = AgreementType.objects.create(name = "Employee Dishonesty", mod_factor = 1.0)
     insuringagreement = InsuringAgreement.objects.create(insurance_limit = 1000000, deductible = 10000, agreement_type = agreementtype)
     accountinfo.save()
     riskdata.save()
@@ -28,5 +37,6 @@ class Quoter(TestCase):
     
   def test_calcPremium(cls):
     quote = cls.quote
-    print models.Exposure.calc_exposure_units(quote.risk_data.employee_count, 10000000)
+    testagreement = quote.insuring_agreements.get(agreement_type__name="Employee Dishonesty")
+    print testagreement.calc_agreement_premium(quote)
       
