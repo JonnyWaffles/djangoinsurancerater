@@ -31,10 +31,9 @@ class QuoterTestCase(TestCase):
     cls.quote.risk_data = riskdata
     cls.quote.class_code = classcode
     cls.quote.save()
-    print "Test Quote is saved key is %s" % (cls.quote.id) 
-    insuringagreement = InsuringAgreement(insurance_limit = 1000000, deductible = 10000, agreement_type = agreementtype)
-    cls.quote.agreements.add(insuringagreement)
-    insuringagreement.save()
+    insuringagreement = InsuringAgreement(insurance_limit = 1800000, deductible = 10000, agreement_type = agreementtype)
+    cls.quote.agreements.add(insuringagreement, bulk=False)
+    
     
   def test_calcPremium(cls):
     quote = cls.quote
