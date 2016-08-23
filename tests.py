@@ -38,5 +38,5 @@ class QuoterTestCase(TestCase):
   def test_calcPremium(cls):
     quote = cls.quote
     testagreement = quote.agreements.get(agreement_type__name="Employee Dishonesty")
-    print testagreement.calc_agreement_premium(quote)
+    print "Quote: %s Insuring Agreement %s Premium is %s" % (quote.account_info.name, testagreement.agreement_type.name, testagreement.calc_agreement_premium(quote))
       

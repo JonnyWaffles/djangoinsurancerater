@@ -83,16 +83,10 @@ class InsuringAgreement(models.Model):
     total_exposure = Exposure.objects.calc_exposure_units(quote.risk_data.employee_count, self.insurance_limit + self.deductible) - deductible_exposure
     insuring_agreement_premium = total_exposure * quote.class_code.sfaa_fidelity_loss_cost * quote.class_code.company_loss_cost * self.agreement_type.mod_factor
     return decimal.Decimal(insuring_agreement_premium)
-    
-    
-#class Pricing(models.Model):
-  #pass
-  
+
 class Quote(models.Model):
   underwriter = models.CharField(max_length=30)
   created_time = models.DateField(auto_now_add=True)
   account_info = models.ForeignKey(AccountInfo, on_delete=models.CASCADE)
   class_code = models.ForeignKey(ClassCode, on_delete=models.CASCADE)
   risk_data = models.ForeignKey(RiskData, on_delete=models.CASCADE)
-  #insuring_agreements = models.ManyToManyField(InsuringAgreement) #Trying to decide between using a FK on InsuringAgreement or ManytoMany, going with FK
-  #pricing = models.ForeignKey(Pricing, on_delete=models.CASCADE)
