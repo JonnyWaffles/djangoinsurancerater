@@ -45,7 +45,7 @@ class ExposureManager(models.Manager):
   @classmethod
   def calc_exposure_units(self, employees, limit):
     from django.core.exceptions import ObjectDoesNotExist
-    #if employees at limit does not return a value from the database return interpolated value. Exposure.objects.filter(insurance_limit=limit)...
+    #if employees at limit does not return a value from the database return interpolated value.
     try:
       exposure = Exposure.objects.get(number_employees=employees, insurance_limit=limit)
       return decimal.Decimal(exposure.exposure_points)
@@ -72,23 +72,18 @@ class InsuringAgreement(models.Model):
   insurance_limit = models.PositiveIntegerField()
   deductible = models.PositiveIntegerField()
   agreement_type = models.ForeignKey(AgreementType, on_delete=models.CASCADE)
+  quote = models.ForeignKey('Quote', on_delete=models.CASCADE, related_name='agreements') #Agreements belong to quotes
   
   def __str__(self):
     return '%s %s %s' % (self.agreement_type.name, self.insurance_limit, self.deductible)
   
-  def calc_agreement_premium(self, quote):                                               
+  def calc_agreement_premium(self, quote):
+    #Removed debugging print statements. The exposure values need to be entered and saved as Decimals.
     deductible_exposure = Exposure.objects.calc_exposure_units(quote.risk_data.employee_count, self.deductible) * decimal.Decimal('.85')
-    print "Deductible Exposure is Type: %s Value: %s" % (type(deductible_exposure), deductible_exposure)
     total_exposure = Exposure.objects.calc_exposure_units(quote.risk_data.employee_count, self.insurance_limit + self.deductible) - deductible_exposure
-    print "Total Exposure is Type: %s Value: %s" % (type(total_exposure), total_exposure)
-    print "SFAA Loss Cost is Type: %s Value: %s" % (type(quote.class_code.sfaa_fidelity_loss_cost), quote.class_code.sfaa_fidelity_loss_cost)
-    print "Company Loss Cost is Type: %s Value: %s" % (type(quote.class_code.company_loss_cost), quote.class_code.company_loss_cost)
-    print "Agreement Mod is Type: %s Value %s" % (type(self.agreement_type.mod_factor), self.agreement_type.mod_factor)
     insuring_agreement_premium = total_exposure * quote.class_code.sfaa_fidelity_loss_cost * quote.class_code.company_loss_cost * self.agreement_type.mod_factor
-    print "Insuring Agreement Premium is Type: %s Value: %s" % (type(insuring_agreement_premium), insuring_agreement_premium)
     return insuring_agreement_premium
-  
-  
+    
     
 #class Pricing(models.Model):
   #pass
@@ -99,5 +94,5 @@ class Quote(models.Model):
   account_info = models.ForeignKey(AccountInfo, on_delete=models.CASCADE)
   class_code = models.ForeignKey(ClassCode, on_delete=models.CASCADE)
   risk_data = models.ForeignKey(RiskData, on_delete=models.CASCADE)
-  insuring_agreements = models.ManyToManyField(InsuringAgreement)
+  #insuring_agreements = models.ManyToManyField(InsuringAgreement) #Trying to decide between using a FK on InsuringAgreement or ManytoMany, going with FK
   #pricing = models.ForeignKey(Pricing, on_delete=models.CASCADE)
