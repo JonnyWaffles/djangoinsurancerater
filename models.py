@@ -10,8 +10,9 @@ import scipy.interpolate
 
 # Create your models here.
 
+@python_2_unicode_compatible  
 class AccountInfo(models.Model):
-  name = models.CharField(max_length=30)
+  name = models.CharField("Insured's Name", max_length=30)
   date = models.DateField(auto_now=True)
   rating_state = USStateField(null=True, blank=True)
   ENTITY_TYPES = (
@@ -19,6 +20,12 @@ class AccountInfo(models.Model):
     ('G', 'Governmental'),
   )
   entity_type = models.CharField(max_length=1, choices=ENTITY_TYPES)
+  
+  def __str__(self):
+    return self.name
+  
+  class Meta:
+    verbose_name = "Account"
   
 class RiskData(models.Model):
   employee_count = models.PositiveIntegerField()
@@ -73,6 +80,7 @@ class InsuringAgreement(models.Model):
   deductible = models.PositiveIntegerField()
   agreement_type = models.ForeignKey(AgreementType, on_delete=models.CASCADE)
   quote = models.ForeignKey('Quote', on_delete=models.CASCADE, related_name='agreements') #Agreements belong to quotes
+  premium = models.DecimalField('Agreement Premium', blank = True, null = True, decimal_places=2, max_digits = 11)
   
   def __str__(self):
     return '%s %s %s' % (self.agreement_type.name, self.insurance_limit, self.deductible)
@@ -85,7 +93,7 @@ class InsuringAgreement(models.Model):
     return decimal.Decimal(insuring_agreement_premium)
 
 class Quote(models.Model):
-  underwriter = models.CharField(max_length=30)
+  underwriter = models.CharField("Underwriter's name", max_length=30)
   created_time = models.DateField(auto_now_add=True)
   account_info = models.ForeignKey(AccountInfo, on_delete=models.CASCADE)
   class_code = models.ForeignKey(ClassCode, on_delete=models.CASCADE)
