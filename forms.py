@@ -1,7 +1,7 @@
 from django.forms import ModelForm
-from djangoinsurancerater import models
+from djangoinsurancerater.models import AccountInfo
 
 class AccountInfoForm(ModelForm):
   class Meta:
     model = AccountInfo
-    fields = ['name', 'date', 'rating_state', 'entity_type']
+    fields = ['name', 'rating_state', 'entity_type']

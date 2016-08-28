@@ -21,6 +21,10 @@ class AccountInfo(models.Model):
   )
   entity_type = models.CharField(max_length=1, choices=ENTITY_TYPES)
   
+  def get_absolute_url(self):
+    from django.core.urlresolvers import reverse
+    return reverse('account-detail', args=[str(self.id)])
+  
   def __str__(self):
     return self.name
   
