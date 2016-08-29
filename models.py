@@ -99,6 +99,6 @@ class InsuringAgreement(models.Model):
 class Quote(models.Model):
   underwriter = models.CharField("Underwriter's name", max_length=30)
   created_time = models.DateField(auto_now_add=True)
-  account_info = models.ForeignKey(AccountInfo, on_delete=models.CASCADE)
+  account_info = models.ForeignKey(AccountInfo, on_delete=models.CASCADE, related_name='quotes')
   class_code = models.ForeignKey(ClassCode, on_delete=models.CASCADE)
   risk_data = models.ForeignKey(RiskData, on_delete=models.CASCADE)
