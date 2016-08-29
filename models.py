@@ -23,7 +23,7 @@ class AccountInfo(models.Model):
   
   def get_absolute_url(self):
     from django.core.urlresolvers import reverse
-    return reverse('account-detail', kwargs={'pk' : self.id})
+    return reverse('djangoinsurancerater:account-detail', kwargs={'pk' : self.id})
   
   def __str__(self):
     return self.name
