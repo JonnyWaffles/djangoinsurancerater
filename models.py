@@ -13,6 +13,7 @@ import scipy.interpolate
 @python_2_unicode_compatible  
 class AccountInfo(models.Model):
   name = models.CharField("Insured's Name", max_length=30)
+  underwriter = models.CharField("Underwriter's name", max_length=30, null=True, blank=True)
   date = models.DateField(auto_now=True)
   rating_state = USStateField(null=True, blank=True)
   ENTITY_TYPES = (
@@ -97,7 +98,6 @@ class InsuringAgreement(models.Model):
     return decimal.Decimal(insuring_agreement_premium)
 
 class Quote(models.Model):
-  underwriter = models.CharField("Underwriter's name", max_length=30)
   created_time = models.DateField(auto_now_add=True)
   account_info = models.ForeignKey(AccountInfo, on_delete=models.CASCADE, related_name='quotes')
   class_code = models.ForeignKey(ClassCode, on_delete=models.CASCADE)
