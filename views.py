@@ -14,7 +14,7 @@ class AccountCreateView(CreateView):
   
 class AccountDetailView(DetailView):
   model = AccountInfo
-  template_name ="djangoinsurancerater/accountinfo_detail"
+  template_name ="djangoinsurancerater/accountinfo_detail.html"
 
 
       
