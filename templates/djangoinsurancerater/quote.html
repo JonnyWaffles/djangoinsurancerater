@@ -3,16 +3,9 @@
 <form action="" method="post">
   {% csrf_token %}
   {{ accountinfoform.as_p }}
-    {% if form.has_changed %} 
-    <input type="submit" value="Update" />
-    {% else %}
-    <input type="submit" value="Submit" />
-    {% endif %}
-</form>
-
-<form action="" method="post">
-  {% csrf_token %}
   {{ riskdataform.as_p }}
+  {{ classcodeform.as_p }}
+  
     {% if form.has_changed %} 
     <input type="submit" value="Update" />
     {% else %}

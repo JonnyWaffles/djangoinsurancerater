@@ -102,3 +102,7 @@ class Quote(models.Model):
   account_info = models.ForeignKey(AccountInfo, on_delete=models.CASCADE, related_name='quotes')
   class_code = models.ForeignKey(ClassCode, on_delete=models.CASCADE)
   risk_data = models.ForeignKey(RiskData, on_delete=models.CASCADE)
+  
+  def get_absolute_url(self):
+    from django.core.urlresolvers import reverse
+    return reverse('djangoinsurancerater:quote-detail', kwargs={'quoteid' : self.id, 'pk' : self.account_info.id})
