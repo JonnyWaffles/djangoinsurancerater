@@ -52,7 +52,17 @@ class AgreementType(models.Model):
   
   def __str__(self):
     return self.name
-  
+##For development purposes save the 9 agreements to the Database
+
+AgreementType.objects.get_or_create(name = "Employe Dishonesty", mod_factor = 1.0)
+AgreementType.objects.get_or_create(name = "Fogery Or Alteration", mod_factor = 0.06)
+AgreementType.objects.get_or_create(name = "Outside The Premises", mod_factor = 0.05)
+AgreementType.objects.get_or_create(name = "Computer Fraud", mod_factor = 0.10)
+AgreementType.objects.get_or_create(name = "Money Orders And Counterfeit Paper Currency", mod_factor = 0.02)
+AgreementType.objects.get_or_create(name = "Clients' Property", mod_factor = 0.10)
+AgreementType.objects.get_or_create(name = "Funds Transfer Fraud", mod_factor = 0.02)
+AgreementType.objects.get_or_create(name = "Social Engineering", mod_factor = 0.10)
+
 class ExposureManager(models.Manager):
   @classmethod
   def calc_exposure_units(self, employees, limit):
@@ -85,7 +95,7 @@ class InsuringAgreement(models.Model):
   deductible = models.PositiveIntegerField()
   agreement_type = models.ForeignKey(AgreementType, on_delete=models.CASCADE)
   quote = models.ForeignKey('Quote', on_delete=models.CASCADE, related_name='agreements') #Agreements belong to quotes
-  premium = models.DecimalField('Agreement Premium', blank = True, null = True, decimal_places=2, max_digits = 11)
+  premium = models.DecimalField('Premium', blank = True, null = True, decimal_places=2, max_digits = 11)
   
   def __str__(self):
     return '%s %s %s' % (self.agreement_type.name, self.insurance_limit, self.deductible)

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from djangoinsurancerater.models import AccountInfo, RiskData, ClassCode, Quote
+from djangoinsurancerater.models import AccountInfo, RiskData, ClassCode, Quote, AgreementType
 
 # Register your models here.
 class AccountInfoAdmin(admin.ModelAdmin):
@@ -14,3 +14,4 @@ admin.site.register(AccountInfo, AccountInfoAdmin)
 admin.site.register(Quote, QuoteAdmin)
 admin.site.register(RiskData)
 admin.site.register(ClassCode)
+admin.site.register(AgreementType)

@@ -1,3 +1,11 @@
+<style>
+  
+  .agreements li {
+    display: inline;
+  }
+
+</style>
+
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
 
 <form action="" method="post">
@@ -5,7 +13,14 @@
   {{ accountinfoform.as_p }}
   {{ riskdataform.as_p }}
   {{ classcodeform.as_p }}
+  {{ InsuringAgreementForms.management_form }}
   
+  {% for form in InsuringAgreementForms %}
+    <ul class="agreements">
+      {{ form.as_ul }}
+    </ul>  
+  {% endfor %}
+    
     {% if form.has_changed %} 
     <input type="submit" value="Update" />
     {% else %}
