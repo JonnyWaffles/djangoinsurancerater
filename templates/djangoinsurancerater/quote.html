@@ -13,9 +13,9 @@
   {{ accountinfoform.as_p }}
   {{ riskdataform.as_p }}
   {{ classcodeform.as_p }}
-  {{ InsuringAgreementForms.management_form }}
+  {{ insuringagreementforms.management_form }}
   
-  {% for form in InsuringAgreementForms %}
+  {% for form in insuringagreementforms %}
     <ul class="agreements">
       {{ form.as_ul }}
     </ul>  

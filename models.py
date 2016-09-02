@@ -44,6 +44,8 @@ class ClassCode(models.Model):
   company_loss_cost = models.DecimalField(max_digits=3, decimal_places=2)
   def __str__(self):
     return self.class_code
+##For development add a test class code to the Database
+ClassCode.objects.get_or_create(class_code = "635-41", sfaa_fidelity_loss_cost = 0.7, company_loss_cost = 1)
   
 @python_2_unicode_compatible  # only if you need to support Python 2  
 class AgreementType(models.Model):
@@ -56,6 +58,7 @@ class AgreementType(models.Model):
 
 AgreementType.objects.get_or_create(name = "Employe Dishonesty", mod_factor = 1.0)
 AgreementType.objects.get_or_create(name = "Fogery Or Alteration", mod_factor = 0.06)
+AgreementType.objects.get_or_create(name = "Inside The Premises", mod_factor = 0.10)
 AgreementType.objects.get_or_create(name = "Outside The Premises", mod_factor = 0.05)
 AgreementType.objects.get_or_create(name = "Computer Fraud", mod_factor = 0.10)
 AgreementType.objects.get_or_create(name = "Money Orders And Counterfeit Paper Currency", mod_factor = 0.02)
@@ -91,9 +94,9 @@ class Exposure(models.Model):
 
 @python_2_unicode_compatible  # only if you need to support Python 2      
 class InsuringAgreement(models.Model):
-  insurance_limit = models.PositiveIntegerField()
-  deductible = models.PositiveIntegerField()
-  agreement_type = models.ForeignKey(AgreementType, on_delete=models.CASCADE)
+  insurance_limit = models.PositiveIntegerField(blank = True, null = True)
+  deductible = models.PositiveIntegerField(default = 0)
+  agreement_type = models.ForeignKey(AgreementType, on_delete=models.CASCADE, editable = True)
   quote = models.ForeignKey('Quote', on_delete=models.CASCADE, related_name='agreements') #Agreements belong to quotes
   premium = models.DecimalField('Premium', blank = True, null = True, decimal_places=2, max_digits = 11)
   

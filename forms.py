@@ -11,10 +11,10 @@ class RiskDataForm(forms.ModelForm):
     model = RiskData
     fields = '__all__'
 
-class InsuringAgreementForm(forms.ModelForm):  
+class InsuringAgreementForm(forms.ModelForm):
   class Meta:
     model = InsuringAgreement
-    fields = ['agreement_type', 'insurance_limit', 'deductible']
+    fields = ['agreement_type', 'insurance_limit', 'deductible', 'premium'] 
 
 class ClassCodeSelectForm(forms.ModelForm):
   class Meta:
