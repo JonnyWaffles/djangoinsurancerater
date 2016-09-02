@@ -105,10 +105,14 @@ class InsuringAgreement(models.Model):
   
   def calc_agreement_premium(self, quote):
     #Removed debugging print statements. The exposure values need to be entered and saved as Decimals.
-    deductible_exposure = Exposure.objects.calc_exposure_units(quote.risk_data.employee_count, self.deductible) * decimal.Decimal('.85')
-    total_exposure = Exposure.objects.calc_exposure_units(quote.risk_data.employee_count, self.insurance_limit + self.deductible) - deductible_exposure
-    insuring_agreement_premium = total_exposure * quote.class_code.sfaa_fidelity_loss_cost * quote.class_code.company_loss_cost * self.agreement_type.mod_factor
-    return decimal.Decimal(insuring_agreement_premium)
+    if self.insurance_limit:
+      deductible_exposure = Exposure.objects.calc_exposure_units(quote.risk_data.rateable_count, self.deductible) * decimal.Decimal('.85')
+      total_exposure = Exposure.objects.calc_exposure_units(quote.risk_data.rateable_count, self.insurance_limit + self.deductible) - deductible_exposure
+      insuring_agreement_premium = total_exposure * quote.class_code.sfaa_fidelity_loss_cost * quote.class_code.company_loss_cost * self.agreement_type.mod_factor
+      premium = decimal.Decimal(insuring_agreement_premium)
+      return round(premium, 2)
+    else:
+      return None
 
 class Quote(models.Model):
   created_time = models.DateField(auto_now_add=True)

@@ -9,5 +9,8 @@
     <input type="submit" value="Submit" />
     {% endif %}
 </form>
-<p>
-</p>
+<ul class="quoteslist">
+ {% for quote in form.instance.quotes.all %}
+  <li><a href="{% url 'djangoinsurancerater:quote-detail' pk=quote.account_info.id quoteid=quote.id %}">{{ quote.created_time }}</a></li>
+ {% endfor %}
+</ul>

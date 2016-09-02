@@ -12,10 +12,9 @@ class RiskDataForm(forms.ModelForm):
     fields = '__all__'
 
 class InsuringAgreementForm(forms.ModelForm):
-  #agreement_type = forms.ChoiceField(widget=forms.Select(attrs={'readonly'}))
   class Meta:
     model = InsuringAgreement
-    fields = ['insurance_limit', 'deductible', 'premium'] 
+    fields = ['insurance_limit', 'deductible'] 
 
 class ClassCodeSelectForm(forms.ModelForm):
   class Meta:

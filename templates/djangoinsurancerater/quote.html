@@ -17,13 +17,16 @@
   
   {% for form in insuringagreementforms %}
     <ul class="agreements">
+      {{ form.id.as_hidden }}
      <li><strong>{{ form.instance.agreement_type }}:</strong></li>
      <li>{{ form.insurance_limit.label_tag }}</li>
+     <li>{{ form.agreement_type.as_hidden }}</li>
      <li>{{ form.insurance_limit }}</li>
      <li>{{ form.deductible.label_tag }}</li>
      <li>{{ form.deductible }}</li>
      <li>{{ form.premium.label_tag }}</li>
-     <li>{{ form.premium }}</li>
+     <li>${{ form.instance.premium }}</li>
+     <li>{{ form.premium.as_hidden }}</li>
     </ul>  
   {% endfor %}
   

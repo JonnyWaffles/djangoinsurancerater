@@ -64,7 +64,12 @@ class QuoteUpdateView(View):
       classcodeform = ClassCodeSelectForm(instance = quote.class_code)
       InsuringAgreementFormSet = inlineformset_factory(Quote, InsuringAgreement, fields = ('agreement_type', 'insurance_limit', 'deductible', 'premium'), 
                                                        extra = 0, form = InsuringAgreementForm)
-      insuringagreementforms = InsuringAgreementFormSet(instance = quote)      
+      insuringagreementforms = InsuringAgreementFormSet(instance = quote)
+      for insuringagreementform in insuringagreementforms:
+        insuring_agreement = insuringagreementform.instance
+        insuring_agreement.premium = insuring_agreement.calc_agreement_premium(quote)
+        insuring_agreement.save()
+        
       context = {'accountinfoform' : accountinfoform, 'riskdataform' : riskdataform, 'classcodeform' : classcodeform, 'insuringagreementforms' : insuringagreementforms}
       return render(request, 'djangoinsurancerater/quote.html', context)
     
@@ -74,9 +79,14 @@ class QuoteUpdateView(View):
       accountinfoform = AccountInfoForm(request.POST, instance=accountinfo)
       riskdataform = RiskDataForm(request.POST, instance = quote.risk_data)
       classcodeform = ClassCodeSelectForm(request.POST, instance = quote.class_code)
-      InsuringAgreementFormSet = inlineformset_factory(Quote, InsuringAgreement)
-      insuringagreementforms = InsuringAgreementFormSet(request.POST, instance = quote, fields = ('agreement_type', 'insurance_limit', 'deductible', 'premium'),
-                                                       extra = 0, form = InsuringAgreementForm)  
+      InsuringAgreementFormSet = inlineformset_factory(Quote, InsuringAgreement, fields = ('agreement_type', 'insurance_limit', 'deductible', 'premium'), 
+                                                       extra = 0, form = InsuringAgreementForm)
+      insuringagreementforms = InsuringAgreementFormSet(request.POST, instance = quote)
+      for insuringagreementform in insuringagreementforms:
+        insuring_agreement = insuringagreementform.instance
+        insuring_agreement.premium = insuring_agreement.calc_agreement_premium(quote)
+        insuring_agreement.save()
+        
       context = {'accountinfoform' : accountinfoform, 'riskdataform' : riskdataform, 'classcodeform' : classcodeform, 'insuringagreementforms' : insuringagreementforms}
       if accountinfoform.is_valid() and riskdataform.is_valid() and classcodeform.is_valid() and insuringagreementforms.is_valid():
         accountinfoform.save()
