@@ -94,7 +94,7 @@ class Exposure(models.Model):
 
 @python_2_unicode_compatible  # only if you need to support Python 2      
 class InsuringAgreement(models.Model):
-  insurance_limit = models.PositiveIntegerField(blank = True, null = True)
+  insurance_limit = models.PositiveIntegerField('limit', blank = True, null = True)
   deductible = models.PositiveIntegerField(default = 0)
   agreement_type = models.ForeignKey(AgreementType, on_delete=models.CASCADE, editable = True)
   quote = models.ForeignKey('Quote', on_delete=models.CASCADE, related_name='agreements') #Agreements belong to quotes
