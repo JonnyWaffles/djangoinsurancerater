@@ -1,22 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="stylesheet" href="style.css" />
     <title>{% block title %}{{account.name}}{% endblock %}</title>
 </head>
 
 <body>
   
   <div id="accountinfoform">
-    {% block accountinfoform %}
+    {% include "djangoinsurancerater/accountinfoform.html" %}  
+    <div id="newquotebutton" class="button">
+      <a href="{% url 'djangoinsurancerater:quote-create-view' pk=accountinfoform.instance.id %}">New Quote</a>
+    </div>
   </div>
-  
-  <div id="newquotebutton">
-    <a href="{% url 'djangoinsurancerater:quote-create-view' pk=account.id %}">New Quote</a>
-  </div>
-  
+
   <div id="recentquotes">
-    {% block recentquotes %}
+    <h1>
+      Recent Quotes
+    </h1>
+    {% include "djangoinsurancerater/recentquotes.html" %}
   </div>
   
 </body>  

@@ -1,11 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.views.generic.edit import UpdateView 
+from django.views.generic.list import ListView 
 from django.views.generic import View
 from django.forms import inlineformset_factory, formset_factory
 from django.http import HttpResponseRedirect
+from django.db.models import Q
 from models import AccountInfo, Quote, RiskData, ClassCode, InsuringAgreement, AgreementType
 from .forms import AccountInfoForm, RiskDataForm, InsuringAgreementForm, ClassCodeSelectForm
-
+import operator
 # Create your views here.
 
 class AccountCreateView(View):
@@ -33,7 +34,23 @@ class AccountUpdateView(View):
     accountinfoform = AccountInfoForm(instance=account)
     lastfivequotes = account.quotes.all().order_by('-created_time')[:5]
     context = {'accountinfoform' : accountinfoform, 'lastfivequotes' : lastfivequotes}
-    return render(request, 'djangoinsurancerater/accountinfo.html' )
+    return render(request, 'djangoinsurancerater/accountinfo.html', context)
+
+class AccountSearchListView(ListView):
+  model = AccountInfo
+  paginate_by = 10
+  
+  def get_queryset(self):
+    result = super(AccountSearchListView, self).get_queryset()
+    query = self.request.GET.get('q')
+    if query:
+      query_list = query.split()
+      result = result.filter(reduce(operator.and_,
+                       (Q(name__icontains=q) for q in query_list))
+                            )
+    return result
+  
+  
 
 class QuoteCreateView(View):
   def get(self, request, *args, **kwargs):

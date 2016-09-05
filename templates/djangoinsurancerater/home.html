@@ -1,18 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="djangoinsurancerater/style.css" />
     <title>{% block title %}Crime Rater 2016{% endblock %}</title>
 </head>
 
 <body>
   
   <div id="accountinfoform">
-    {% block accountinfoform %}{% endblock %}
+    {% include "djangoinsurancerater/accountinfoform.html" %}
   </div>
   
   <div id="recentaccounts">
-    {% block recentaccounts %}{% endblock %}
+    <h1>
+      Recent Accounts
+    </h1>
+    <div>
+      {% include "djangoinsurancerater/recentaccounts.html" %}
+    </div>    
+  </div>
+  
+  <div id=searchboxdiv>
+    <form id="searchform" action="{% url 'djangoinsurancerater:account-search-list-view' %}" method="get" accept-charset="utf-8">
+      <input class="searchfield" id="searchbox" name="q" type="text" placeholder="Search">
+      <button class="searchbutton" type="submit"></button>      
+    </form>
   </div>
   
 </body>  

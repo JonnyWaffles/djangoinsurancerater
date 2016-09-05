@@ -1,0 +1,10 @@
+<h1>
+  Account Search Results
+</h1> 
+<ul class="accountlist">
+   {% for account in object_list %}
+    <li><a href="{% url 'djangoinsurancerater:account-update-view' pk=account.id %}">{{ account.name }}</a></li>
+   {% empty %}
+    <li>There are no search results.</li>
+   {% endfor %}
+</ul>
