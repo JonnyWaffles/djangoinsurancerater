@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="style.css" />
+    <title>{% block title %}{{account.name}}{% endblock %}</title>
+</head>
+
+<body>
+  
+  <div id="accountinfoform">
+    {% block accountinfoform %}
+  </div>
+  
+  <div id="newquotebutton">
+    <a href="{% url 'djangoinsurancerater:quote-create-view' pk=account.id %}">New Quote</a>
+  </div>
+  
+  <div id="recentquotes">
+    {% block recentquotes %}
+  </div>
+  
+</body>  
+  
+</html>

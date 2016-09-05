@@ -24,7 +24,7 @@ class AccountInfo(models.Model):
   
   def get_absolute_url(self):
     from django.core.urlresolvers import reverse
-    return reverse('djangoinsurancerater:account-detail', kwargs={'pk' : self.id})
+    return reverse('djangoinsurancerater:account-update-view', kwargs={'pk' : self.id})
   
   def __str__(self):
     return self.name
@@ -122,4 +122,4 @@ class Quote(models.Model):
   
   def get_absolute_url(self):
     from django.core.urlresolvers import reverse
-    return reverse('djangoinsurancerater:quote-detail', kwargs={'quoteid' : self.id, 'pk' : self.account_info.id})
+    return reverse('djangoinsurancerater:quote-update-view', kwargs={'quoteid' : self.id, 'pk' : self.account_info.id})

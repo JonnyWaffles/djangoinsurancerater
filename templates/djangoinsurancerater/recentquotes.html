@@ -1,0 +1,12 @@
+{% extends "accountinfo.html" %}
+
+{% block recentquotes %}
+  <ul class="recentlist">
+   {% for quote in lastfivequotes %}
+    <li><a href="{% url 'djangoinsurancerater:quote-update-view' pk=quote.account_info.id quoteid=quote.id %}">{{ quote.created_time }}</a></li>
+   {% empty %}
+    <li>There are no recent quotes.</li>
+   {% endfor %}
+  </ul>
+{% endblock %}
+ 

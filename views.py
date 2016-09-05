@@ -1,6 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.views.generic.edit import CreateView, UpdateView 
-from django.views.generic.detail import DetailView 
+from django.views.generic.edit import UpdateView 
 from django.views.generic import View
 from django.forms import inlineformset_factory, formset_factory
 from django.http import HttpResponseRedirect
@@ -9,15 +8,32 @@ from .forms import AccountInfoForm, RiskDataForm, InsuringAgreementForm, ClassCo
 
 # Create your views here.
 
-class AccountCreateView(CreateView):
-  model = AccountInfo
-  fields = ['name', 'underwriter', 'rating_state', 'entity_type']
-  template_name = "djangoinsurancerater/accountinfo_form.html" 
+class AccountCreateView(View):
+  def get(self, request, *args, **kwargs):
+    #I need a search box that queries all the account names, search results are shown below. AccountInform form with a new button that posts an
+    #account to the DB and returns the AccountUpdateView.
+    newaccountform = AccountInfoForm()
+    lastfiveaccounts = AccountInfo.objects.all().order_by('-date')[:5]
+    context = {'accountinfoform' : newaccountform, 'lastfiveaccounts' : lastfiveaccounts}
+    return render(request, 'djangoinsurancerater/home.html', context)
   
-class AccountUpdateView(UpdateView):
-  model = AccountInfo
-  fields = ['name', 'underwriter', 'rating_state', 'entity_type']
-  template_name = "djangoinsurancerater/accountinfo_form.html"
+  def post(self, request, *args, **kwargs):
+    newaccountform = AccountInfoForm(request.POST)
+    lastfiveaccounts = AccountInfo.objects.all().order_by('-date')[:5]
+    context = {'accountinfoform' : newaccountform, 'lastfiveaccounts' : lastfiveaccounts}
+    if newaccountform.is_valid():
+      newaccount = newaccountform.save()
+      return redirect(newaccount)
+    else:
+      return render(request, 'djangoinsurancerater/home.html', context)    
+  
+class AccountUpdateView(View):
+  def get(self, request, *args, **kwargs):
+    account = get_object_or_404(AccountInfo, pk=kwargs['pk'])
+    accountinfoform = AccountInfoForm(instance=account)
+    lastfivequotes = account.quotes.all().order_by('-created_time')[:5]
+    context = {'accountinfoform' : accountinfoform, 'lastfivequotes' : lastfivequotes}
+    return render(request, 'djangoinsurancerater/accountinfo.html' )
 
 class QuoteCreateView(View):
   def get(self, request, *args, **kwargs):

@@ -1,0 +1,12 @@
+{% extends "home.html" %}
+
+{% block recentaccounts %}
+  <ul class="recentlist">
+   {% for account in lastfiveaccounts %}
+    <li><a href="{% url 'djangoinsurancerater:account-detail' pk=account.id %}">{{ account.name }}</a></li>
+   {% empty %}
+    <li>There are no recent accounts.</li>
+   {% endfor %}
+  </ul>
+{% endblock %}
+ 
