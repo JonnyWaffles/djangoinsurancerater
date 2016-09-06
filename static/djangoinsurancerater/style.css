@@ -1,0 +1,194 @@
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+li {
+  list-style-type: none;
+}
+
+button {
+  border-radius: 8px;
+  font-size: 16px;
+  background-color: white;
+  min-width: 100px;
+  min-height: 26px;
+  display: block;
+  margin: 0 auto;
+  width: 50px;
+  cursor: pointer; 
+}
+
+button a {
+  text-decoration: none;
+}
+
+button a:visited {
+  color:inherit
+}
+
+.wrapper {
+  display: flex;
+  flex-flow: row wrap;
+  text-align: center;
+}
+
+.wrapper > * {
+  padding: 10px;
+  flex: 1 100%;
+}
+
+.header {
+  background: #CC0000;
+  height: 35px;
+  width: 100%;
+  padding: 0;
+  justify-content: center;
+}
+
+.header h1 {
+  text-align: center;
+  padding: 10px;
+  font-size: 1.2em;
+  margin: 0;
+  color: #F7FFF7
+}
+
+.footer {
+  background: #EAEAEA;
+}
+
+.content {
+  background: #FFFFFF;
+  margin-top:50px;
+}
+
+.content-row-1 {
+  margin:auto;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.content-row-2 {
+  margin:auto;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.recentlist {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  text-align: left;
+}
+
+.agreements li {
+    display: inline;
+}
+
+.accountinfoform {
+  text-align: left;
+}
+
+.accountinfoform label, input {
+  display: inline-flex;
+}
+
+.accountinfoform label {
+  min-width:140px;
+}
+
+.quoteinfoform label, input {
+  display: inline-flex
+}
+
+.quoteinfoform label {
+  min-width: 140px
+}
+
+.insuring-agreement-list {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-content: flex-start;
+}
+
+.insuring-agreement-list ul {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center; 
+  align-content: center;
+}
+
+.insuring-agreement-list ul li input {
+  max-width: 90px;
+}
+
+.insuring-agreement-list ul li {
+  font-size: 0.8em;
+}
+
+.agreementname {
+  width: 150px;
+}
+
+.insuring-agreement-list li:not(.agreementname) {
+  padding-right: 20px;
+}
+
+.text-align-left {
+  text-align: left;
+}
+
+.search-result-table {
+  margin-top: 50px
+}
+
+.search-result-table td {
+  padding: 1px 20px;
+}
+
+.search-result-table th {
+  padding-bottom: 20px;
+}
+
+.search-result-table tr:nth-child(even) {
+  background-color: #EFF0F1;
+}
+
+#searchboxdiv input {
+  display: block;
+  min-width: 300px;
+  margin-bottom: 15px;
+  margin-top: 30px;
+}
+
+#recentaccounts {
+  margin-top: 50px;
+}
+
+/* Medium Screens */
+@media all and (max-width: 600px) {
+  .insuring-agreement-list ul {
+    display: flex;
+    flex-flow: column wrap; 
+    margin: 0 auto;
+  }
+  
+  .insuring-agreement-list li {
+    margin: 5px auto;
+  }
+  
+  .insuring-agreement-list li input {
+    width: 140px;
+  }
+}
+
+/* Large Screens */
+@media all and (min-width: 800px) {
+
+}

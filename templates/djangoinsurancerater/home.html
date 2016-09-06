@@ -1,32 +1,49 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="stylesheet" href="djangoinsurancerater/style.css" />
+    <link rel="stylesheet" href={% static "djangoinsurancerater/style.css" %} />
     <title>{% block title %}Crime Rater 2016{% endblock %}</title>
 </head>
 
 <body>
-  
-  <div id="accountinfoform">
-    {% include "djangoinsurancerater/accountinfoform.html" %}
-  </div>
-  
-  <div id="recentaccounts">
-    <h1>
-      Recent Accounts
-    </h1>
-    <div>
-      {% include "djangoinsurancerater/recentaccounts.html" %}
-    </div>    
-  </div>
-  
-  <div id=searchboxdiv>
-    <form id="searchform" action="{% url 'djangoinsurancerater:account-search-list-view' %}" method="get" accept-charset="utf-8">
-      <input class="searchfield" id="searchbox" name="q" type="text" placeholder="Search">
-      <button class="searchbutton" type="submit"></button>      
-    </form>
-  </div>
-  
+  <div class="wrapper">
+    
+    <div class="header">
+      <h1>
+        Search for an Account or Create New
+      </h1>   
+    </div>
+    
+    <div class="content">
+      
+      <div class="content-row-1">        
+      
+          <div class="accountinfoform">
+            {% include "djangoinsurancerater/accountinfoform.html" %}
+          </div>
+
+          <div id=searchboxdiv>
+            <form id="searchform" action="{% url 'djangoinsurancerater:account-search-list-view' %}" method="get" accept-charset="utf-8">
+              <input class="searchfield" id="searchbox" name="q" type="text" placeholder="Search">             
+            </form>
+            <button class="searchbutton" form="searchform" type="submit">Search</button>    
+          </div>
+        
+      </div>
+      
+      <div class="content-row-2">
+        
+        <div id="recentaccounts">
+          <h2>
+            Recent Accounts
+          </h2>          
+            {% include "djangoinsurancerater/recentaccounts.html" %}   
+        </div>
+      </div>
+      
+    </div>
+  </div>  
 </body>  
   
 </html>

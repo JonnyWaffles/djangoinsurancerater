@@ -1,25 +1,45 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>{% block title %}{{account.name}}{% endblock %}</title>
+    <link rel="stylesheet" href={% static "djangoinsurancerater/style.css" %} />
+    <title>{% block title %}{{accountinfoform.instance.name}}{% endblock %}</title>
 </head>
 
 <body>
-  
-  <div id="accountinfoform">
-    {% include "djangoinsurancerater/accountinfoform.html" %}  
-    <div id="newquotebutton" class="button">
-      <a href="{% url 'djangoinsurancerater:quote-create-view' pk=accountinfoform.instance.id %}">New Quote</a>
+  <div class="wrapper">
+    
+    <div class="header">
+      <h1>
+        Update Your Account: {{accountinfoform.instance.name}}
+      </h1>   
+    </div>
+    
+    <div class="content">
+      
+      <div class="content-row-1">
+        
+        <div class="accountinfoform">
+          {% include "djangoinsurancerater/accountinfoform.html" %}
+          <button id="newquotebutton">
+            <a href="{% url 'djangoinsurancerater:quote-create-view' pk=accountinfoform.instance.id %}">New Quote</a>
+          </button>  
+        </div>
+        
+      </div>
+      
+      <div class="content-row-2">
+        
+        <div id="recentquotes">
+          <h2>
+            Recent Quotes
+          </h2>
+          {% include "djangoinsurancerater/recentquotes.html" %}
+        </div>
+        
+      </div>
     </div>
   </div>
-
-  <div id="recentquotes">
-    <h1>
-      Recent Quotes
-    </h1>
-    {% include "djangoinsurancerater/recentquotes.html" %}
-  </div>
-  
 </body>  
   
 </html>

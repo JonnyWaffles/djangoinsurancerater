@@ -1,38 +1,68 @@
-<style>
-  
-  .agreements li {
-    display: inline;
-  }
-
-</style>
-
+{% load static %}
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href={% static "djangoinsurancerater/style.css" %} />
+    <title>{% block title %}{{accountinfoform.instance.name}}{% endblock %}</title>
+</head>
 
-<form action="" method="post">
-  {% csrf_token %}
-  {{ accountinfoform.as_p }}
-  {{ riskdataform.as_p }}
-  {{ classcodeform.as_p }}
-  {{ insuringagreementforms.management_form }}
-  
-  {% for form in insuringagreementforms %}
-    <ul class="agreements">
-      {{ form.id.as_hidden }}
-     <li><strong>{{ form.instance.agreement_type }}:</strong></li>
-     <li>{{ form.insurance_limit.label_tag }}</li>
-     <li>{{ form.agreement_type.as_hidden }}</li>
-     <li>{{ form.insurance_limit }}</li>
-     <li>{{ form.deductible.label_tag }}</li>
-     <li>{{ form.deductible }}</li>
-     <li>{{ form.premium.label_tag }}</li>
-     <li>${{ form.instance.premium }}</li>
-     <li>{{ form.premium.as_hidden }}</li>
-    </ul>  
-  {% endfor %}
-  
-    {% if form.has_changed %} 
-    <input type="submit" value="Update" />
-    {% else %}
-    <input type="submit" value="Submit" />
-    {% endif %}
-</form>
+<body>
+  <div class="wrapper">
+    
+    <div class="header">
+      <h1>
+        Quote Your Account: {{accountinfoform.instance.name}}
+      </h1>   
+    </div>
+    
+    <div class="content">
+      
+      <div class="content-row-1"> 
+        
+        <div class="quoteinfoform">
+
+          <form action="" method="post" id="quoteform">
+            {% csrf_token %}
+            {{ accountinfoform.as_p }}
+            {{ riskdataform.as_p }}
+            {{ classcodeform.as_p }}
+        </div>  
+      </div> 
+        
+      <div class="insuring-agreement-list"> 
+              <ul>
+                <li>Agreement Name</li>
+                <li>Limit</li>
+                <li>Deductible</li>
+                <li>Premium</li>
+              </ul>
+            {{ insuringagreementforms.management_form }}
+            {% for insuringagreementform in insuringagreementforms %}
+              <ul>
+                {{ insuringagreementform.id.as_hidden }}
+               <li class="agreementname">{{ insuringagreementform.instance.agreement_type }}:</li>
+               <li>{{ insuringagreementform.agreement_type.as_hidden }}</li>
+               <li>{{ insuringagreementform.insurance_limit }}</li>
+               <li>{{ insuringagreementform.deductible }}</li>
+               <li>${{ insuringagreementform.instance.premium }}</li>
+               <li>{{ insuringagreementform.premium.as_hidden }}</li>
+              </ul>  
+            {% endfor %} 
+          </form>
+          
+          <button type="submit" value="submit" form="quoteform">
+            {% if form.has_changed %}
+            Update
+            {% else %}
+            Create
+            {% endif%}
+          </button>       
+
+      </div>
+        
+    </div>
+      
+  </div>
+    
+</body>

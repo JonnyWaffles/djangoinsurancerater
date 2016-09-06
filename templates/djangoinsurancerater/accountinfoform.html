@@ -3,6 +3,6 @@
 <form action="" method="post">
       {% csrf_token %}
       {{ accountinfoform.as_p}}
-      <input type="submit" value={% if accountinfoform.instance.id %} "Update" {% else %} "Create" {% endif %}/>
+  <button type="submit">{% if accountinfoform.instance.id %} Update {% else %} Create {% endif %}</button>
 </form>
 {% endblock %}
