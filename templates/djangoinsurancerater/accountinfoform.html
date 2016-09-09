@@ -1,8 +1,43 @@
 {% block accountinfoform %}
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
-<form action="" method="post">
-      {% csrf_token %}
-      {{ accountinfoform.as_p}}
-  <button type="submit">{% if accountinfoform.instance.id %} Update {% else %} Create {% endif %}</button>
-</form>
+  {% csrf_token %}
+  <div class="form-group">
+    {{ accountinfoform.name.errors }}
+    {{ accountinfoform.name.label_tag }}
+    <input type="text" class="form-control"
+           name="{{ accountinfoform.name.name }}"
+           id="{{ accountinfoform.name.name }}"
+           value="{{ accountinfoform.name.value }}"       >
+    {% if accountinfoform.name.help_text %}
+    <p class="help">
+      {{ accountinfoform.name.help_text|safe }}
+    </p>
+    {% endif %}      
+  </div>
+  
+  <div class="form-group">
+    {{ accountinfoform.underwriter.errors }}
+    {{ accountinfoform.underwriter.label_tag }}
+    <input type="text" class="form-control"
+           name="{{ accountinfoform.underwriter.name }}"
+           id="{{ accountinfoform.underwriter.name }}"
+           value="{{ accountinfoform.underwriter.value }}"       >
+    {% if accountinfoform.underwriter.help_text %}
+    <p class="help">
+      {{ accountinfoform.underwriter.help_text|safe }}
+    </p>
+    {% endif %}     
+  </div>
+  
+  <div class="form-group">
+    {{ accountinfoform.rating_state.errors }}
+    {{ accountinfoform.rating_state.label_tag }}
+    {{ accountinfoform.rating_state }}
+  </div>
+  
+  <div class="form-group">
+    {{ accountinfoform.entity_type.errors }}
+    {{ accountinfoform.entity_type.label_tag }}
+    {{ accountinfoform.entity_type }}
+  </div> 
 {% endblock %}

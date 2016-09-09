@@ -1,0 +1,60 @@
+#firstrow {
+    font-size: 0;
+}
+      
+#firstrow > * {
+    float: none;
+    display: inline-block;
+    font-size: 14px; /* if using LESS it's quicker to just use @font-size-base */
+}
+#firstrow > *:last-child {
+    vertical-align: bottom;
+}
+#firstrow p:last-child {
+    margin-bottom: 0; /* optional */
+}
+
+.header {
+  margin-bottom:30px;
+  background: #CC0000;
+}
+
+.header h3 {
+  margin: 4.5px auto;
+  color: #F7FFF7
+}
+
+.container {
+  background: #FFFFFF;
+}
+
+.mediummarginbottom {
+  margin-bottom: 60px;
+}
+
+#searchform {
+  margin-top: 40px;
+}
+
+#searchresulttable {
+  width:100%;
+  font-size: 1.2em;
+}
+
+#recentaccountsrow {
+  margin-top: 100px;
+}
+
+#newquotebutton {
+  margin-top: 30px;
+}
+
+.riskdatagroup label {
+  min-width: 116px;
+}
+
+@media screen and (max-width: 994px){
+    .insuringagreements {
+        text-align: center;
+    }
+}

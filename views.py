@@ -127,6 +127,13 @@ class QuoteUpdateView(View):
         classcodeform.save()
         insuringagreementforms.save()
         return redirect(quote)
+      else:
+        accountinfo = get_object_or_404(AccountInfo, pk=kwargs['pk'])
+        accountinfoform = AccountInfoForm(instance=accountinfo)
+        riskdataform = RiskDataForm(request.POST)
+        classcodeform = ClassCodeSelectForm(request.POST)
+        insuringagreementforms = InsuringAgreementFormSet(request.POST, instance = quote)
+        return render(request, 'djangoinsurancerater/quote.html', context)
     
     
 
