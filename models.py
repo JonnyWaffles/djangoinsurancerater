@@ -75,13 +75,16 @@ class ExposureManager(models.Manager):
       exposure = Exposure.objects.get(number_employees=employees, insurance_limit=limit)
       return decimal.Decimal(exposure.exposure_points)
     except ObjectDoesNotExist:
-      employee_count_record_set = Exposure.objects.filter(number_employees=employees)
-      #find two records, one for the greatest limit in the queryset less than X and one for the smallest limit in the queryset greater than X
-      lower_bound = employee_count_record_set.filter(insurance_limit__lt=limit).order_by('-insurance_limit').first()
-      upper_bound = employee_count_record_set.filter(insurance_limit__gt=limit).order_by('insurance_limit').first() 
-      limit_interp = scipy.interpolate.interp1d([lower_bound.insurance_limit, upper_bound.insurance_limit], [lower_bound.exposure_points, upper_bound.exposure_points])
-      answer = limit_interp(limit)
-      return decimal.Decimal(float(answer))
+      if limit < 1000:
+        return decimal.Decimal(0.00)
+      else:
+        employee_count_record_set = Exposure.objects.filter(number_employees=employees)
+        #find two records, one for the greatest limit in the queryset less than X and one for the smallest limit in the queryset greater than X
+        lower_bound = employee_count_record_set.filter(insurance_limit__lt=limit).order_by('-insurance_limit').first()
+        upper_bound = employee_count_record_set.filter(insurance_limit__gt=limit).order_by('insurance_limit').first() 
+        limit_interp = scipy.interpolate.interp1d([lower_bound.insurance_limit, upper_bound.insurance_limit], [lower_bound.exposure_points, upper_bound.exposure_points])
+        answer = limit_interp(limit)
+        return decimal.Decimal(float(answer))
     
 class Exposure(models.Model):
   number_employees = models.PositiveIntegerField()

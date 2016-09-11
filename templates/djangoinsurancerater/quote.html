@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" href={% static "djangoinsurancerater/bootstrapstyle.css" %} />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script src={% static "djangoinsurancerater/scripts.js" %}></script>
     <title>{% block title %}{{accountinfoform.instance.name}}{% endblock %}</title>
 </head>
 
@@ -22,10 +23,10 @@
       
     </div>
     
-    <form action="" method="post" id="accountinfoform" class="accountinfoform"> 
+    
     <div class="row mediummarginbottom">
-      
-                 
+     <form action="" method="post" id="accountinfoform" class="accountinfoform">  
+                 {% csrf_token %}
           <div class="col-md-6 col-lg-6">        
               {% include "djangoinsurancerater/accountinfoform.html" %}      
           </div>
@@ -75,13 +76,13 @@
               
       </div>
           
-
-      
+        
+      </form> 
     </div>
     
-      {% csrf_token %}
+      
     <div class="row">
-      {{ insuringagreementforms.management_form }}
+      
     </div>
     
     <div class="row hidden-sm hidden-xs">
@@ -109,21 +110,25 @@
     
 
     {% for insuringagreementform in insuringagreementforms %}
-    <div class="row"> 
-      <div class="col-md-3">
-        <div class="form-group">
-          {{ insuringagreementform.id.as_hidden }}
-          {{ insuringagreementform.instance.agreement_type }}:
-          {{ insuringagreementform.agreement_type.as_hidden }}
-        </div>        
+    <div class="row insuringagreementrow">
+      <form action="" method="post">
+        {% csrf_token %}
+        {{ insuringagreementforms.management_form }}
+      <div class="col-md-3">               
+          <div class="form-group">
+            {{ insuringagreementform.id.as_hidden }}
+            {{ insuringagreementform.instance.agreement_type }}:
+            {{ insuringagreementform.agreement_type.as_hidden }}
+          </div>
+        
       </div>
       <div class="col-md-3">
-        <div class="form-group">
+        <div class="form-group currency">
           {{ insuringagreementform.insurance_limit }}
         </div>        
       </div>
       <div class="col-md-3">
-        <div class="form-group">
+        <div class="form-group currency">
           {{ insuringagreementform.deductible }}
         </div>        
       </div>
@@ -132,7 +137,11 @@
           ${{ insuringagreementform.instance.premium }}
           {{ insuringagreementform.premium.as_hidden }}
         </div>        
-      </div> 
+      </div>
+        <button type="submit" class="btn btn-primary" value="submit">
+          TEST
+        </button>
+     </form>   
     </div>
       
       {% endfor %} 
@@ -143,7 +152,7 @@
             Create
             {% endif%}
         </button>  
-      </form>
+      
           
                
 

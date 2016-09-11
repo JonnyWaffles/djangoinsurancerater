@@ -95,7 +95,7 @@ class QuoteUpdateView(View):
       accountinfoform = AccountInfoForm(instance=accountinfo)
       riskdataform = RiskDataForm(instance = quote.risk_data)
       classcodeform = ClassCodeSelectForm(instance = quote.class_code)
-      InsuringAgreementFormSet = inlineformset_factory(Quote, InsuringAgreement, fields = ('agreement_type', 'insurance_limit', 'deductible', 'premium'), 
+      InsuringAgreementFormSet = inlineformset_factory(Quote, InsuringAgreement, fields = ('agreement_type', 'insurance_limit' , 'deductible', 'premium'), 
                                                        extra = 0, form = InsuringAgreementForm)
       insuringagreementforms = InsuringAgreementFormSet(instance = quote)
       for insuringagreementform in insuringagreementforms:
@@ -112,7 +112,7 @@ class QuoteUpdateView(View):
       accountinfoform = AccountInfoForm(request.POST, instance=accountinfo)
       riskdataform = RiskDataForm(request.POST, instance = quote.risk_data)
       classcodeform = ClassCodeSelectForm(request.POST, instance = quote.class_code)
-      InsuringAgreementFormSet = inlineformset_factory(Quote, InsuringAgreement, fields = ('agreement_type', 'insurance_limit', 'deductible', 'premium'), 
+      InsuringAgreementFormSet = inlineformset_factory(Quote, InsuringAgreement, fields = ('agreement_type', 'insurance_limit' , 'deductible', 'premium'), 
                                                        extra = 0, form = InsuringAgreementForm)
       insuringagreementforms = InsuringAgreementFormSet(request.POST, instance = quote)
       for insuringagreementform in insuringagreementforms:
