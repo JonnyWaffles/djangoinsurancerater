@@ -14,9 +14,9 @@ class RiskDataForm(forms.ModelForm):
 class InsuringAgreementForm(forms.ModelForm):
   class Meta:
     model = InsuringAgreement
-    fields = ['agreement_type', 'insurance_limit', 'deductible'] 
+    fields = [ 'agreement_type', 'insurance_limit', 'deductible'] 
     localized_fields = ['insurance_limit', 'deductible'] 
-    widgets = {'agreement_type': forms.HiddenInput()}
+    widgets = {'agreement_type': forms.HiddenInput(),}
 
 class ClassCodeSelectForm(forms.ModelForm):
   class Meta:

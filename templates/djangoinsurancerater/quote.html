@@ -109,18 +109,15 @@
     </div>
     
 
-    {% for insuringagreementform in insuringagreementforms %}
+    {% for insuringagreementform in insuring_agreement_forms %}
     <div class="row insuringagreementrow">
       <form action="" method="post">
         {% csrf_token %}
-        {{ insuringagreementforms.management_form }}
       <div class="col-md-3">               
           <div class="form-group">
-            {{ insuringagreementform.id.as_hidden }}
             {{ insuringagreementform.instance.agreement_type }}:
-            {{ insuringagreementform.agreement_type.as_hidden }}
-          </div>
-        
+            {{ insuringagreementform.agreement_type }}
+          </div>        
       </div>
       <div class="col-md-3">
         <div class="form-group currency">
