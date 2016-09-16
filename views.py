@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic.list import ListView 
 from django.views.generic import View
 from django.forms import inlineformset_factory, formset_factory
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.db.models import Q
 from models import AccountInfo, Quote, RiskData, ClassCode, InsuringAgreement, AgreementType
 from .forms import AccountInfoForm, RiskDataForm, InsuringAgreementForm, ClassCodeSelectForm
@@ -88,54 +88,47 @@ class QuoteCreateView(View):
       context = {'accountinfoform' : accountinfoform, 'riskdataform' : riskdataform, 'classcodeform' : classcodeform}
       return render(request, 'djangoinsurancerater/quote.html', context)
   
-class QuoteUpdateView(View):
+class QuoteUpdateView(View):    
   def get(self, request, *args, **kwargs):
-      accountinfo = get_object_or_404(AccountInfo, pk=kwargs['pk'])
-      quote = get_object_or_404(Quote, pk=kwargs['quoteid'])
-      accountinfoform = AccountInfoForm(instance=accountinfo)
-      riskdataform = RiskDataForm(instance = quote.risk_data)
-      classcodeform = ClassCodeSelectForm(instance = quote.class_code)
-      insuring_agreements = quote.agreements.all()
-      insuring_agreement_forms = [ InsuringAgreementForm(instance = insuring_agreement) for insuring_agreement in insuring_agreements ]
-      
-      context = {'accountinfoform' : accountinfoform, 'riskdataform' : riskdataform, 'classcodeform' : classcodeform, 'insuring_agreement_forms' : insuring_agreement_forms}
-      return render(request, 'djangoinsurancerater/quote.html', context)
+    accountinfo = get_object_or_404(AccountInfo, pk=kwargs['pk'])
+    quote = get_object_or_404(Quote, pk=kwargs['quoteid'])
+    accountinfoform = AccountInfoForm(instance = accountinfo)
+    riskdataform = RiskDataForm(instance = quote.risk_data)
+    classcodeform = ClassCodeSelectForm(instance = quote.class_code)
+    insuring_agreements = quote.agreements.all()
+    insuring_agreement_forms = [ InsuringAgreementForm(instance = insuring_agreement) for insuring_agreement in insuring_agreements ]
+    context = {'accountinfoform' : accountinfoform, 'riskdataform' : riskdataform, 'classcodeform' : classcodeform, 'insuring_agreement_forms' : insuring_agreement_forms}
+    return render(request, 'djangoinsurancerater/quote.html', context)
     
   def post(self, request, *args, **kwargs):
-      accountinfo = get_object_or_404(AccountInfo, pk=kwargs['pk'])
-      quote = get_object_or_404(Quote, pk=kwargs['quoteid'])
-      accountinfoform = AccountInfoForm(request.POST, instance = accountinfo)
-      riskdataform = RiskDataForm(request.POST, instance = quote.risk_data)
-      classcodeform = ClassCodeSelectForm(request.POST, instance = quote.class_code)
-      insuring_agreement_form = InsuringAgreementForm(request.POST, instance = quote.agreements.get(agreement_type__exact = request.POST['agreement_type']))
-      print(request.POST)
-      if insuring_agreement_form.is_valid():
-        print("valid")
-        insuring_agreement = insuring_agreement_form.save()
-        insuring_agreement.premium = insuring_agreement.calc_agreement_premium(quote)
-        insuring_agreement.save()
-        
-        return redirect(quote)
-      else:
-        print(insuringagreementform.errors)
-        return redirect(quote)
+    accountinfo = get_object_or_404(AccountInfo, pk=kwargs['pk'])
+    quote = get_object_or_404(Quote, pk=kwargs['quoteid'])
+    accountinfoform = AccountInfoForm(request.POST, instance = accountinfo)
+    riskdataform = RiskDataForm(request.POST, instance = quote.risk_data)
+    classcodeform = ClassCodeSelectForm(request.POST, instance = quote.class_code)
+    insuring_agreement_form = InsuringAgreementForm(request.POST, instance = quote.agreements.get(agreement_type__exact = request.POST['agreement_type']))
+    print(request.POST)
+    if insuring_agreement_form.is_valid():
+      print("valid")
+      insuring_agreement = insuring_agreement_form.save()
+      insuring_agreement.premium = insuring_agreement.calc_agreement_premium(quote)
+      insuring_agreement.save()        
+      return JsonResponse({'premium' : insuring_agreement.premium })
+    else:
+      print(insuring_agreement_form.errors)
+      return redirect(quote)
 
-      '''  
-      context = {'accountinfoform' : accountinfoform, 'riskdataform' : riskdataform, 'classcodeform' : classcodeform, 'insuringagreementform' : insuringagreementform}
-      if accountinfoform.is_valid() and riskdataform.is_valid() and classcodeform.is_valid() and insuringagreementform.is_valid():
-        accountinfoform.save()
-        riskdataform.save()
-        classcodeform.save()
-        insuringagreementforms.save()
-        return redirect(quote)
-      else:
-        accountinfo = get_object_or_404(AccountInfo, pk=kwargs['pk'])
-        accountinfoform = AccountInfoForm(instance=accountinfo)
-        riskdataform = RiskDataForm(request.POST)
-        classcodeform = ClassCodeSelectForm(request.POST)
-        insuringagreementforms = InsuringAgreementFormSet(request.POST, instance = quote)
-        return render(request, 'djangoinsurancerater/quote.html', context)
-      '''
+    if accountinfoform.is_valid() and riskdataform.is_valid() and classcodeform.is_valid():
+      accountinfoform.save()
+      riskdataform.save()
+      classcodeform.save()
+      return redirect(quote)
+    else:
+      accountinfoform = AccountInfoForm(request.POST)
+      riskdataform = RiskDataForm(request.POST)
+      classcodeform = ClassCodeSelectForm(request.POST)
+      return render(request, 'djangoinsurancerater/quote.html', self.context)
+
     
 
     

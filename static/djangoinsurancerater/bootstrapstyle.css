@@ -53,8 +53,33 @@
   min-width: 116px;
 }
 
+.insuring-agreement-form span {
+  padding-right: 5px;
+}
+
+.insuring-agreement-form span:hover {
+  cursor: pointer;
+}
+
+.limit {
+  margin: 0px;
+  padding-top:10px;
+}
+
+.deductible {
+  margin:0px;
+  padding-top:10px;
+}
+
+.premium {
+  margin:0px;
+  padding-top:5px;
+}
+
+
 @media screen and (max-width: 994px){
-    .insuringagreements {
+    
+  .insuring-agreement-form {
         text-align: center;
     }
 }

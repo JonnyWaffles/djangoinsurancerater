@@ -73,6 +73,9 @@
                 </p>
                 {% endif %}      
             </div>
+            <button type="submit" class="btn btn-primary" value="submit" form="accountinfoform">
+              Update
+            </button>  
               
       </div>
           
@@ -81,25 +84,26 @@
     </div>
     
       
-    <div class="row">
-      
-    </div>
-    
-    <div class="row hidden-sm hidden-xs">
+    <div class="row hidden-sm hidden-xs mediummarginbottom">
       <div class="col-md-3">
         <h4>
           Agreement Type
         </h4>
+        <h5>
+          Set Global Value
+        </h5>
       </div>
       <div class="col-md-3">
         <h4>
           Limit
         </h4>
+        <input type=text placeholder="limit" id="global-limit">
       </div>
       <div class="col-md-3">
         <h4>
           Deductible
         </h4>
+        <input type=text placeholder="deductible" id="global-deductible">
       </div>
       <div class="col-md-3">
         <h4>
@@ -110,45 +114,41 @@
     
 
     {% for insuringagreementform in insuring_agreement_forms %}
-    <div class="row insuringagreementrow">
-      <form action="" method="post">
+    <div class="row insuringagreementrow text-justify">
+      
+      <form class = "insuring-agreement-form" action="" method="post">
         {% csrf_token %}
       <div class="col-md-3">               
-          <div class="form-group">
-            {{ insuringagreementform.instance.agreement_type }}:
+          <div class="form-group">            
+            <h5>
+              <span class="glyphicon glyphicon-remove"></span> {{ insuringagreementform.instance.agreement_type }}:
+            </h5>           
             {{ insuringagreementform.agreement_type }}
           </div>        
       </div>
       <div class="col-md-3">
-        <div class="form-group currency">
+        <div class="form-group limit">
           {{ insuringagreementform.insurance_limit }}
         </div>        
       </div>
       <div class="col-md-3">
-        <div class="form-group currency">
+        <div class="form-group deductible">
           {{ insuringagreementform.deductible }}
         </div>        
       </div>
       <div class="col-md-3">
-        <div class="form-group">
-          ${{ insuringagreementform.instance.premium }}
-          {{ insuringagreementform.premium.as_hidden }}
+        <div id=" {{ insuringagreementform.instance.agreement_type.id }}-premium" class="form-group premium">
+          <p class="premium">
+            ${{ insuringagreementform.instance.premium }}
+          </p>
         </div>        
       </div>
-        <button type="submit" class="btn btn-primary" value="submit">
-          TEST
-        </button>
+        
      </form>   
     </div>
       
       {% endfor %} 
-        <button type="submit" class="btn btn-primary" value="submit" form="accountinfoform">
-            {% if form.has_changed %}
-            Update
-            {% else %}
-            Create
-            {% endif%}
-        </button>  
+        
       
           
                

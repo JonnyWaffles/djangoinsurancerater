@@ -13,7 +13,25 @@ function getCookie(name) {
         }
     }
     return cookieValue;
+  }
+
+function setGlobals(target, val) {
+  
+  var anyNonEmpty = false;
+  target.each(function() {
+    if($(this).val()){
+      anyNonEmpty = true;         
+    }
+  });
+
+  if (anyNonEmpty === true) {
+    answer = confirm("Over write current limits or deductibles?");
+    if (answer) {
+      target.val(val).change();
+    }      
+  } 
 }
+
 var csrftoken = getCookie('csrftoken');
 
 function csrfSafeMethod(method) {
@@ -25,6 +43,17 @@ function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
+function fader(selectedquery) {
+  selectedquery.each( function () {
+    var $row = $(this).closest(".row");
+    if ( $(this).val() === "0") {
+      $row.fadeTo("fast", 0.2);
+     } else {
+       $row.fadeTo("fast", 1);
+     }
+    })
+  }
+
 $.ajaxSetup({
     beforeSend: function(xhr, settings) {
         if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
@@ -33,14 +62,39 @@ $.ajaxSetup({
     }
 });
 
-/*$( document ).ready(function () {
+$( document ).ready(function () {
   
-  current_url = $(location).attr('href');
-  $(".currency input").each( function () {
-    var item = $(this).val();
-    var num = numberWithCommas(item);
-    console.log ($(this).val(num));
-    
-  });     
-                                                    
-}); */
+  $("#global-limit").change(function() { 
+    setGlobals($(".limit input"), $(this).val());
+    var prevalue = $(this).val()
+    $(this).val(numberWithCommas(prevalue));
+  });
+  
+  $("#global-deductible").change(function() { 
+    setGlobals($(".deductible input"), $(this).val());
+    var prevalue = $(this).val()
+    $(this).val(numberWithCommas(prevalue))
+  });
+  
+  $(".limit input, .deductible input").change(function() {
+    var prevalue = $(this).val();
+    $(this).val(numberWithCommas(prevalue));
+    fader($(this));
+    var $form = $(this).closest(".insuring-agreement-form");
+    $.post($form.attr('action'), $form.serialize(), function(response) {
+      var $currentpremiumdiv = $form.find(".premium")
+      // Need to find the same form as $form in the response and then find the premium
+      $currentpremiumdiv.html(response.premium)
+    });
+    //no post data error....
+  });
+  
+  fader($(".limit input"));
+  
+  $(".glyphicon-remove").click( function() {
+    var $form = $(this).closest(".insuring-agreement-form");
+    $form.find(".limit input, .deductible input").val('0').change();
+  });
+                            
+});
+
