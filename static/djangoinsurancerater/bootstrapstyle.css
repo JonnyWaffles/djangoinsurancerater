@@ -1,3 +1,30 @@
+html, body {
+  height: 100%
+}
+
+.wrapper {
+    min-height: 100%;
+    height: auto !important;
+    height: 100%;
+    margin: 0 auto -60px;
+}
+
+.footer, .push {
+  /* Set the fixed height of the footer here */
+  height: 60px;  
+}
+
+.footer {
+  background-color: #CC0000;
+  margin-left:-15px;
+  margin-right:-15px;
+}
+
+.footer h3 {
+  color: #F7FFF7;
+  padding-top:15px;
+}
+
 #firstrow {
     font-size: 0;
 }
@@ -21,7 +48,7 @@
 
 .header h3 {
   margin: 4.5px auto;
-  color: #F7FFF7
+  color: #F7FFF7;
 }
 
 .container {
@@ -76,6 +103,9 @@
   padding-top:5px;
 }
 
+.glyphicon {
+  top: 0px;
+}
 
 @media screen and (max-width: 994px){
     

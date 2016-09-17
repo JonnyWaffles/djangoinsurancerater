@@ -25,12 +25,14 @@ function setGlobals(target, val) {
   });
 
   if (anyNonEmpty === true) {
-    answer = confirm("Over write current limits or deductibles?");
-    if (answer) {
+    $("#confirmModal").modal('toggle');
+    $("#confirmYesButton").click( function() {
       target.val(val).change();
-    }      
-  } 
-}
+      })
+  } else {
+    target.val(val).change()
+  }      
+} 
 
 var csrftoken = getCookie('csrftoken');
 
@@ -95,6 +97,17 @@ $( document ).ready(function () {
     var $form = $(this).closest(".insuring-agreement-form");
     $form.find(".limit input, .deductible input").val('0').change();
   });
-                            
+  
+  $("#classcodesection input").addClass("form-control");
+  
+  $("#classcodesearchspan").click( function() {
+    var lookupsite = "http://preview.976eqizjby1a714i47lnbbh6irb5ipb93xnm0a070wo2yb9.box.codeanywhere.com:8000/rater/codes/?q=";
+    var searchterm = $("#classcodesection input").val()
+    $.get((lookupsite + searchterm), function(response) {
+    $("#classCodeSearchModalBody").html(response);
+    });
+    $("#classCodeSearchModal").modal('toggle')
+    
+  })
 });
 

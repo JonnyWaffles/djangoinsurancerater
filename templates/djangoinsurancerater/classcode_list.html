@@ -1,0 +1,10 @@
+{% for classcode in object_list %}
+<div class="row class-code-row">
+  <div class="col-md-6 class-code-div">
+    {{ classcode.class_code }}
+  </div>
+  <div class="col-md-6 class-description-div">
+    {{ classcode.description }}
+  </div>
+</div>
+{% endfor %}

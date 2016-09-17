@@ -106,17 +106,20 @@ class QuoteUpdateView(View):
     accountinfoform = AccountInfoForm(request.POST, instance = accountinfo)
     riskdataform = RiskDataForm(request.POST, instance = quote.risk_data)
     classcodeform = ClassCodeSelectForm(request.POST, instance = quote.class_code)
-    insuring_agreement_form = InsuringAgreementForm(request.POST, instance = quote.agreements.get(agreement_type__exact = request.POST['agreement_type']))
-    print(request.POST)
-    if insuring_agreement_form.is_valid():
-      print("valid")
-      insuring_agreement = insuring_agreement_form.save()
-      insuring_agreement.premium = insuring_agreement.calc_agreement_premium(quote)
-      insuring_agreement.save()        
-      return JsonResponse({'premium' : insuring_agreement.premium })
-    else:
-      print(insuring_agreement_form.errors)
-      return redirect(quote)
+    context = {'accountinfoform' : accountinfoform, 'riskdataform' : riskdataform, 'classcodeform' : classcodeform }
+    if request.is_ajax():
+      insuring_agreement_form = InsuringAgreementForm(request.POST, instance = quote.agreements.get
+                                                      (agreement_type__exact = request.POST['agreement_type'])
+                                                     )
+      if insuring_agreement_form.is_valid():
+        print("valid")
+        insuring_agreement = insuring_agreement_form.save()
+        insuring_agreement.premium = insuring_agreement.calc_agreement_premium(quote)
+        insuring_agreement.save()        
+        return JsonResponse({'premium' : insuring_agreement.premium })
+      else:
+        print(insuring_agreement_form.errors)
+        return redirect(quote)
 
     if accountinfoform.is_valid() and riskdataform.is_valid() and classcodeform.is_valid():
       accountinfoform.save()
@@ -127,9 +130,23 @@ class QuoteUpdateView(View):
       accountinfoform = AccountInfoForm(request.POST)
       riskdataform = RiskDataForm(request.POST)
       classcodeform = ClassCodeSelectForm(request.POST)
-      return render(request, 'djangoinsurancerater/quote.html', self.context)
+      return render(request, 'djangoinsurancerater/quote.html', context)
 
-    
+class ClassCodeSearch(ListView):
+  model = ClassCode
+  paginate_by = 10
+  
+  def get_queryset(self):
+    result = super(ClassCodeSearch, self).get_queryset()
+    query = self.request.GET.get('q')
+    if query:
+      query_list = query.split()
+      result = result.filter(reduce(operator.and_,
+                       (Q(description__icontains=q) for q in query_list))
+                            )
+    return result
+
+      
 
     
     
