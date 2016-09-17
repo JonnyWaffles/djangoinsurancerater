@@ -103,11 +103,22 @@ $( document ).ready(function () {
   $("#classcodesearchspan").click( function() {
     var lookupsite = "http://preview.976eqizjby1a714i47lnbbh6irb5ipb93xnm0a070wo2yb9.box.codeanywhere.com:8000/rater/codes/?q=";
     var searchterm = $("#classcodesection input").val()
-    $.get((lookupsite + searchterm), function(response) {
-    $("#classCodeSearchModalBody").html(response);
-    });
-    $("#classCodeSearchModal").modal('toggle')
     
+    $.get((lookupsite + searchterm), function(response) {      
+      $("#classCodeSearchModalBody").html(response); 
+      
+      $(".class-code-row").click( function () {
+        console.log("clicked");
+        var selectedcode = $.trim($(this).find(".class-code-div").html());
+        console.log(selectedcode);
+        $("#classCodeSearchModal").modal('toggle');
+        $("#classcodesection input").val(selectedcode);
+      });
+      
+      $("#classCodeSearchModal").modal('toggle');
+      
+    });
+      
   })
 });
 
