@@ -19,9 +19,12 @@ class InsuringAgreementForm(forms.ModelForm):
     widgets = {'agreement_type': forms.HiddenInput(),}
 
 class ClassCodeSelectForm(forms.ModelForm):
+  class_code = forms.CharField(max_length=100)
+  
   class Meta:
     model = ClassCode
     fields = ['class_code']
+
         
     
   

@@ -94,6 +94,7 @@ class QuoteUpdateView(View):
     quote = get_object_or_404(Quote, pk=kwargs['quoteid'])
     accountinfoform = AccountInfoForm(instance = accountinfo)
     riskdataform = RiskDataForm(instance = quote.risk_data)
+    print "GET CLASS CODE IS %s" % (quote.class_code)
     classcodeform = ClassCodeSelectForm(instance = quote.class_code)
     insuring_agreements = quote.agreements.all()
     insuring_agreement_forms = [ InsuringAgreementForm(instance = insuring_agreement) for insuring_agreement in insuring_agreements ]
@@ -124,7 +125,10 @@ class QuoteUpdateView(View):
     if accountinfoform.is_valid() and riskdataform.is_valid() and classcodeform.is_valid():
       accountinfoform.save()
       riskdataform.save()
-      classcodeform.save()
+      classcode_to_query = classcodeform.cleaned_data['class_code']
+      classcode = ClassCode.objects.get(class_code = classcode_to_query)
+      quote.class_code = classcode
+      quote.save()
       return redirect(quote)
     else:
       accountinfoform = AccountInfoForm(request.POST)

@@ -109,6 +109,7 @@ html, body {
 
 .class-code-row:hover {
   cursor: pointer;
+  background:lightgray;
 }
 
 @media screen and (max-width: 994px){
