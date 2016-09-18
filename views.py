@@ -94,7 +94,6 @@ class QuoteUpdateView(View):
     quote = get_object_or_404(Quote, pk=kwargs['quoteid'])
     accountinfoform = AccountInfoForm(instance = accountinfo)
     riskdataform = RiskDataForm(instance = quote.risk_data)
-    print "GET CLASS CODE IS %s" % (quote.class_code)
     classcodeform = ClassCodeSelectForm(instance = quote.class_code)
     insuring_agreements = quote.agreements.all()
     insuring_agreement_forms = [ InsuringAgreementForm(instance = insuring_agreement) for insuring_agreement in insuring_agreements ]
@@ -150,7 +149,49 @@ class ClassCodeSearch(ListView):
                             )
     return result
 
+class APIView(View):
+  def get(self, request, *args, **kwargs):
+    #API needs agreements, class_code, employees, limit, deductible
+    #Returns premium as Json
+    errors = []
+    request_dict = request.GET
+    #Agreements post should be single string with numbers ie. 1238 each number an agreement or "A" for All, which is default
+    request_agreements = request_dict.get('agreements', 'A')
+    agreement_types = []
+    for character in request_agreements:
+      if character == 'a' or character == 'A':        
+        for agreements in AgreementType.objects.all():
+          agreement_types.append(agreements)
+      else:
+          #Note this will only work in production when each agreement has the right ID 1-9
+          agreement_types.append(AgreementType.objects.get(id = character))
+    class_code = ClassCode.objects.get(class_code = request_dict.get('class_code', '635-41'))
+    employees = 0
+    try:
+      employees = request_dict['employees']
+    except KeyError as e:
+      errors.append("Employee Count Must Be Provided")
+      return JsonResponse({'errors': errors }, safe = False)
+    limit = int(filter(lambda x: x.isdigit(), (request_dict.get('limit', '1000000'))))
+    deductible = int(filter(lambda x: x.isdigit(), (request_dict.get('deductible', '10000'))))
+    #limit and deductible default to $1M/$10k
+    accountinfo = AccountInfo()    
+    risk_data = RiskData()
+    risk_data.rateable_count = employees
+    quote = Quote(account_info = accountinfo, class_code = class_code, risk_data = risk_data)
+    quote_insuring_agreement_list = []
+    for agreement in agreement_types:      
+      IA = InsuringAgreement(insurance_limit = limit, deductible = deductible, 
+                                             agreement_type = agreement, quote = quote)
+      quote_insuring_agreement_list.append(IA)
+    premium = 0
+    for insuring_agreement in quote_insuring_agreement_list:
+      print "Insuring Agreement: %s   Premium:  %s" % (insuring_agreement.agreement_type, insuring_agreement.calc_agreement_premium(quote))
+      premium = premium + insuring_agreement.calc_agreement_premium(quote)
+    return JsonResponse({'premium' : round(premium, 2)})
+ 
       
+    
 
     
     

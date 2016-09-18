@@ -48,6 +48,7 @@ class ClassCode(models.Model):
   
 @python_2_unicode_compatible  # only if you need to support Python 2  
 class AgreementType(models.Model):
+  id = models.PositiveIntegerField(primary_key = True)
   name = models.CharField(max_length=30)
   mod_factor = models.DecimalField(max_digits=5, decimal_places=2)
   
@@ -89,7 +90,7 @@ class InsuringAgreement(models.Model):
   deductible = models.PositiveIntegerField(default = 0)
   agreement_type = models.ForeignKey(AgreementType, on_delete=models.CASCADE, editable = True)
   quote = models.ForeignKey('Quote', on_delete=models.CASCADE, related_name='agreements') #Agreements belong to quotes
-  premium = models.DecimalField('Premium', blank = True, null = True, decimal_places=2, max_digits = 11)
+  premium = models.DecimalField('Premium', blank = True, null = True, decimal_places=2, max_digits = 11)  
   
   def __str__(self):
     return '%s %s %s' % (self.agreement_type.name, self.insurance_limit, self.deductible)
