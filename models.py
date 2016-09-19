@@ -96,7 +96,7 @@ class InsuringAgreement(models.Model):
     return '%s %s %s' % (self.agreement_type.name, self.insurance_limit, self.deductible)
   
   def calc_agreement_premium(self, quote):
-    #Removed debugging print statements. The exposure values need to be entered and saved as Decimals.
+    #The exposure values need to be entered and saved as Decimals.
     if self.insurance_limit:
       deductible_exposure = Exposure.objects.calc_exposure_units(quote.risk_data.rateable_count, self.deductible) * decimal.Decimal('.85')
       total_exposure = Exposure.objects.calc_exposure_units(quote.risk_data.rateable_count, self.insurance_limit + self.deductible) - deductible_exposure
