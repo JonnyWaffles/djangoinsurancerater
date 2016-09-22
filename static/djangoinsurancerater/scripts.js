@@ -101,7 +101,7 @@ $( document ).ready(function () {
   $("#classcodesection input").addClass("form-control");
   
   $("#classcodesearchspan").click( function() {
-    var lookupsite = "http://preview.976eqizjby1a714i47lnbbh6irb5ipb93xnm0a070wo2yb9.box.codeanywhere.com:8000/rater/codes/?q=";
+    var lookupsite = "http://www.jonnywaffles.com/django/rater/codes/?q=";
     var searchterm = $("#classcodesection input").val()
     
     $.get((lookupsite + searchterm), function(response) {      

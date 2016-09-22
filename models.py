@@ -78,7 +78,7 @@ class ExposureManager(models.Manager):
 class Exposure(models.Model):
   number_employees = models.PositiveIntegerField()
   insurance_limit = models.PositiveIntegerField()
-  exposure_points = models.DecimalField(max_digits=7, decimal_places=2)
+  exposure_points = models.DecimalField(max_digits=9, decimal_places=2)
   objects = ExposureManager()
   
   class Meta:
